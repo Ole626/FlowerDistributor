@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from paho.mqtt import client as mqtt_client
+from threading import Thread
 
 
 class AbstractClient(ABC):
@@ -10,13 +11,14 @@ class AbstractClient(ABC):
         self.id = f'client-{id}'
         self.client = None
         self.connected = False
+        self.latest_msg = None
 
     @abstractmethod
     def subscribe(self, topic):
         pass
 
     @abstractmethod
-    def publish(self, topic):
+    def publish(self, topic, msg):
         pass
 
     def connect_broker(self):
@@ -36,3 +38,9 @@ class AbstractClient(ABC):
         client.on_disconnect = on_disconnect
         client.connect(self.broker, self.port)
         self.client = client
+
+        thread = Thread(target=client.loop_forever)
+        thread.start()
+
+    def disconnect_broker(self):
+        self.client.disconnect()
