@@ -23,12 +23,16 @@ class AbstractClient(ABC):
         def on_connect(clt, userdata, flags, rc):
             if rc == 0:
                 self.connected = True
-                print("Connected to MQTT Broker!")
+                print(f"{self.id} connected to MQTT Broker!")
             else:
                 print("Failed to connect, return code %d\n", rc)
+
+        def on_disconnect(clt, userdata, rc):
+            print(f"{self.id} disconnected!")
 
         client = mqtt_client.Client(self.id)
         # client.username_pw_set(username, password)
         client.on_connect = on_connect
+        client.on_disconnect = on_disconnect
         client.connect(self.broker, self.port)
         self.client = client

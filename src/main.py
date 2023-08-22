@@ -1,20 +1,17 @@
+import threading
+import time
+
 from control_client import ControlClient
 from display_client import DisplayClient
 
 
-BROKER_IP = "192.168.0.101"
-BROKER_PORT = 1883
-TOPIC = "python/test"
-
 def main():
-    ctrl_client = ControlClient(BROKER_IP, BROKER_PORT, 1)
-    dis_client = DisplayClient(BROKER_IP, BROKER_PORT, 2)
+    thread1 = threading.Thread(target=DisplayClient.main)
+    thread1.start()
 
-    ctrl_client.connect_broker()
-    dis_client.connect_broker()
+    time.sleep(0.5)
 
-    dis_client.subscribe(TOPIC)
-    ctrl_client.publish(TOPIC)
+    ControlClient.main()
 
 
 if __name__ == "__main__":
