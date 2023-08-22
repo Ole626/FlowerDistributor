@@ -23,7 +23,7 @@ def main():
 
     while not dc.latest_msg:
         time.sleep(1)
-        
+
     dc.disconnect_broker()
 
 
