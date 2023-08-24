@@ -1,29 +1,25 @@
 from abstract_client import AbstractClient
 
 
-BROKER_IP = "192.168.0.101"
-BROKER_PORT = 1883
-TOPIC = "python/test"
-
-
 class DisplayClient(AbstractClient):
 
-    def publish(self, topic):
+    def __init__(self, broker, port, id, topic, text_element):
+        super().__init__(broker, port, id)
+        self.topic = topic
+        self.text_element = text_element
+
+    def connect_broker(self):
+        super().connect_broker()
+        self.subscribe(self.topic)
+
+    def publish(self, topic, msg):
         pass
 
     def subscribe(self, topic):
-        def on_message(client, userdata, msg):
-            print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
-            client.disconnect()
-
         self.client.subscribe(topic)
-        self.client.on_message = on_message
+        self.client.on_message = self.__on_message
         print(f"Subscribed to {topic}")
 
-    @staticmethod
-    def main():
-        dis_client = DisplayClient(BROKER_IP, BROKER_PORT, "display")
-
-        dis_client.connect_broker()
-        dis_client.subscribe(TOPIC)
-        dis_client.client.loop_forever()
+    def __on_message(self, client, userdata, msg):
+        print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+        self.latest_msg = msg.payload.decode()
