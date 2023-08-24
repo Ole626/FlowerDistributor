@@ -10,12 +10,11 @@ TOPIC = "python/test"
 
 def main():
     cc = ControlClient(BROKER_IP, BROKER_PORT, "Control")
-    dc = DisplayClient(BROKER_IP, BROKER_PORT, "Display")
+    dc = DisplayClient(BROKER_IP, BROKER_PORT, "Display", TOPIC, "test")
 
     cc.connect_broker()
     dc.connect_broker()
 
-    dc.subscribe(TOPIC)
     time.sleep(1)
     cc.publish(TOPIC, "Test Message")
 
