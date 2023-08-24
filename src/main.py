@@ -26,6 +26,5 @@ def main():
     dc.disconnect_broker()
 
 
-
 if __name__ == "__main__":
     main()

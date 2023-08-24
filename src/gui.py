@@ -13,6 +13,21 @@ class GUI:
     def __init__(self, theme="DefaultNoMoreNagging"):
         self.theme = theme
 
+    def control_page(self, topics):
+        sg.theme(self.theme)
+
+        layout = [
+            [sg.Text("Test", background_color="black", text_color="white", font=("Arial", 10), size=(10, 5), justification="center")]
+        ]
+
+        window = sg.Window("Control Page", layout, size=(300, 300))
+
+        while True:
+            event, values = window.read()
+
+            if event == sg.WINDOW_CLOSED:
+                break
+
     def start_page(self):
         sg.theme(self.theme)
 
@@ -57,7 +72,7 @@ class GUI:
     def main():
         gui = GUI()
 
-        gui.start_page()
+        gui.control_page(["topic1", "topic2"])
 
 
 if __name__ == "__main__":
