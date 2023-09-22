@@ -1,0 +1,6 @@
+{
+  "client_type": "Display",
+  "id_info": "1",
+  "broker_ip": "192.168.0.101",
+  "broker_port": 1883
+}

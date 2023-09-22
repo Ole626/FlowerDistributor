@@ -5,10 +5,9 @@ from control_client import ControlClient
 
 BROKER_IP = "192.168.0.101"
 BROKER_PORT = 1883
-TOPIC = "python/test"
 
 
-class GUI:
+class ControlGui:
 
     def __init__(self, theme="DefaultNoMoreNagging"):
         self.theme = theme
@@ -31,23 +30,17 @@ class GUI:
     def start_page(self):
         sg.theme(self.theme)
 
-        dc = DisplayClient(BROKER_IP, BROKER_PORT, "Display")
         cc = ControlClient(BROKER_IP, BROKER_PORT, "Control")
 
-        dc.connect_broker()
         cc.connect_broker()
 
         layout = [
-            [sg.Frame("Subscriber", [
-                [sg.Text(dc.id, size=(15, 1)),
-                 sg.Text(dc.latest_msg, key="msg_text", size=(30, 1)),
-                 sg.Button("Refresh", enable_events=True),
-                 sg.Button("Subscribe", enable_events=True)]
-            ])],
             [sg.Frame("Publisher", [
-                [sg.Text(cc.id, size=(15,1)),
+                [sg.Text(cc.screen_id, size=(15,1)),
                  sg.InputText(tooltip="Enter your message here", key="msg", size=(20, 1)),
-                 sg.Button("Publish", enable_events=True)]
+                 sg.Button("Publish", enable_events=True)],
+                [sg.Button("Test ID On", enable_events=True),
+                 sg.Button("Test ID Off", enable_events=True)]
             ])],
             [sg.Exit()]
         ]
@@ -57,23 +50,22 @@ class GUI:
         while True:
             event, values = window.read()
 
-            if event == "Subscribe":
-                dc.subscribe(TOPIC)
-            if event == "Refresh":
-                window["msg_text"].update(dc.latest_msg)
             if event == "Publish":
-                cc.publish(TOPIC, values["msg"])
+                cc.publish('client-1/label', values["msg"])
+            if event == "Test ID On":
+                cc.publish("client-1/id_test", 1)
+            if event == "Test ID Off":
+                cc.publish("client-1/id_test", 0)
             if event == "Exit" or event == sg.WINDOW_CLOSED:
-                dc.disconnect_broker()
                 cc.disconnect_broker()
                 break
 
     @staticmethod
     def main():
-        gui = GUI()
-
-        gui.control_page(["topic1", "topic2"])
+        gui = ControlGui()
+        gui.start_page()
+        #gui.control_page(["topic1", "topic2"])
 
 
 if __name__ == "__main__":
-    GUI.main()
+    ControlGui.main()

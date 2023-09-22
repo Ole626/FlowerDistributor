@@ -3,23 +3,24 @@ from abstract_client import AbstractClient
 
 class DisplayClient(AbstractClient):
 
-    def __init__(self, broker, port, id, topic, text_element):
-        super().__init__(broker, port, id)
-        self.topic = topic
-        self.text_element = text_element
+    def __init__(self, broker, port, screen_id, topics, gui):
+        super().__init__(broker, port, screen_id)
+        self.topics = topics
+        self.gui = gui
 
     def connect_broker(self):
         super().connect_broker()
-        self.subscribe(self.topic)
+        for topic in self.topics:
+            self.subscribe(topic)
 
-    def publish(self, topic, msg):
-        pass
-
-    def subscribe(self, topic):
-        self.client.subscribe(topic)
-        self.client.on_message = self.__on_message
-        print(f"Subscribed to {topic}")
-
-    def __on_message(self, client, userdata, msg):
+    def on_message(self, client, userdata, msg):
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
         self.latest_msg = msg.payload.decode()
+
+        if msg.topic == self.screen_id + "/label":
+            self.gui.update_text(self.latest_msg)
+        elif msg.topic == self.screen_id + "/id_test":
+            if self.latest_msg == '1':
+                self.gui.show_mqtt_id(self.screen_id)
+            if self.latest_msg == '0':
+                self.gui.hide_mqtt_id()
