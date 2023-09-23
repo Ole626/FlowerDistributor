@@ -1,71 +1,78 @@
 import PySimpleGUI as sg
 
-from display_client import DisplayClient
 from control_client import ControlClient
-
-BROKER_IP = "192.168.0.101"
-BROKER_PORT = 1883
 
 
 class ControlGui:
 
-    def __init__(self, theme="DefaultNoMoreNagging"):
+    def __init__(self, broker_ip, broker_port, id_value, screen_amount, theme="DefaultNoMoreNagging"):
+        self.broker_ip = broker_ip
+        self.broker_port = broker_port
+        self.id_value = id_value
+        self.screen_amount = screen_amount
+        self.selected_screen = '1'
         self.theme = theme
+        self.window = None
 
-    def control_page(self, topics):
+    def control_page(self):
         sg.theme(self.theme)
 
         layout = [
-            [sg.Text("Test", background_color="black", text_color="white", font=("Arial", 10), size=(10, 5), justification="center")]
+            self.screen_frames(self.screen_amount),
+            [sg.Push(),
+             sg.Frame(layout=[
+                [sg.InputText('', key='_INPUT_TEXT_', font=('Arial', 42))],
+                [sg.Push(),
+                 sg.Button("Update", key='_UPDATE_', font=("Arial", 28), enable_events=True),
+                 sg.Push()]
+             ], title="Scherm Update", font=('Arial', 32)),
+             sg.Push()]
         ]
 
-        window = sg.Window("Control Page", layout, size=(300, 300))
+        self.window = sg.Window("Control Page", layout=layout, no_titlebar=False, finalize=True)
 
-        while True:
-            event, values = window.read()
+        self.window.maximize()
 
-            if event == sg.WINDOW_CLOSED:
-                break
-
-    def start_page(self):
-        sg.theme(self.theme)
-
-        cc = ControlClient(BROKER_IP, BROKER_PORT, "Control")
-
+        cc = ControlClient(self.broker_ip, self.broker_port, self.id_value)
         cc.connect_broker()
 
-        layout = [
-            [sg.Frame("Publisher", [
-                [sg.Text(cc.screen_id, size=(15,1)),
-                 sg.InputText(tooltip="Enter your message here", key="msg", size=(20, 1)),
-                 sg.Button("Publish", enable_events=True)],
-                [sg.Button("Test ID On", enable_events=True),
-                 sg.Button("Test ID Off", enable_events=True)]
-            ])],
-            [sg.Exit()]
-        ]
-
-        window = sg.Window("Test Page", layout)
-
         while True:
-            event, values = window.read()
+            event, values = self.window.read()
 
-            if event == "Publish":
-                cc.publish('client-1/label', values["msg"])
-            if event == "Test ID On":
-                cc.publish("client-1/id_test", 1)
-            if event == "Test ID Off":
-                cc.publish("client-1/id_test", 0)
-            if event == "Exit" or event == sg.WINDOW_CLOSED:
+            if event == sg.WINDOW_CLOSED:
                 cc.disconnect_broker()
                 break
+            if '_SELECT_' in event:
+                self.select_screen(self.window, event.split('_')[2])
+            if event == '_UPDATE_':
+                topic = 'client-' + self.selected_screen + '/label'
+                text = values['_INPUT_TEXT_']
+                cc.publish(topic, text)
+                self.window['_SCREEN_' + self.selected_screen + '_TEXT_'].update(text)
 
-    @staticmethod
-    def main():
-        gui = ControlGui()
-        gui.start_page()
-        #gui.control_page(["topic1", "topic2"])
+    def select_screen(self, window, screen_id):
+        window['_SCREEN_' + self.selected_screen + '_TEXT_'].update(background_color='white')
+        window['_SCREEN_' + screen_id + '_TEXT_'].update(background_color='light green')
 
+        self.selected_screen = screen_id
+        window.refresh()
 
-if __name__ == "__main__":
-    ControlGui.main()
+    def screen_frames(self, amount):
+        result = []
+
+        for i in range(1, amount+1):
+            result.append(sg.Frame(layout=[[sg.Text(str(i),
+                                                    font=('Arial', 50),
+                                                    key='_SCREEN_' + str(i) + '_TEXT_',
+                                                    justification='c',
+                                                    expand_x=True,
+                                                    background_color='white')],
+                                           [sg.Push(),
+                                            sg.Button('Selecteer', font=('Arial', 28), key='_SCREEN_' + str(i) + '_SELECT_'),
+                                            sg.Push()]],
+                                   title='Scherm ' + str(i), expand_x=True, key='_SCREEN_' + str(i) + '_FRAME_', font=('Arial', 32)))
+
+        return result
+
+    def main(self):
+        self.control_page()
