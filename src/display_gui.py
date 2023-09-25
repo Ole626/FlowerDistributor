@@ -26,7 +26,7 @@ class DisplayGui:
             [sg.Text("", key="_FILLER_2_TEXT_", expand_x=True, expand_y=True, background_color="white")]
         ]
 
-        self.window = sg.Window("Display Page", layout=layout, text_justification='c', no_titlebar=False, finalize=True, background_color="white")
+        self.window = sg.Window("Display Page", layout=layout, text_justification='c', no_titlebar=False, finalize=True, background_color="white", size=sg.Window.get_screen_size())
 
         self.window.maximize()
 
