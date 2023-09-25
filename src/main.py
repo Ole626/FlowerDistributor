@@ -1,30 +1,31 @@
-import time
+import json
+from pathlib import Path
 
-from control_client import ControlClient
-from display_client import DisplayClient
+from display_gui import DisplayGui
+from control_gui import ControlGui
 
-BROKER_IP = "192.168.0.101"
-BROKER_PORT = 1883
-TOPIC = "python/test"
+
+ROOT_DIR = Path(__file__).parent.parent
+CONFIG_FILE_PATH = ROOT_DIR.joinpath('conf.json')
 
 
 def main():
-    cc = ControlClient(BROKER_IP, BROKER_PORT, "Control")
-    dc = DisplayClient(BROKER_IP, BROKER_PORT, "Display", TOPIC, "test")
+    client_type, id_value, broker_ip, broker_port = load_json_config(CONFIG_FILE_PATH)
 
-    cc.connect_broker()
-    dc.connect_broker()
+    if client_type == "Display":
+        topics = ['client-' + id_value + '/label', 'client-' + id_value + '/id_test']
+        gui = DisplayGui(broker_ip, broker_port, topics, id_value)
+        gui.main()
+    elif client_type == "Control":
+        gui = ControlGui(broker_ip, broker_port, 'control', int(id_value))
+        gui.main()
 
-    time.sleep(1)
-    cc.publish(TOPIC, "Test Message")
 
-    cc.disconnect_broker()
+def load_json_config(file_name):
+    with open(file_name) as f:
+        data = json.load(f)
 
-    while not dc.latest_msg:
-        time.sleep(1)
-
-    dc.disconnect_broker()
-
+    return data["client_type"], data["id_info"], data["broker_ip"], data["broker_port"]
 
 
 if __name__ == "__main__":
