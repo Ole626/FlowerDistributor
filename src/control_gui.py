@@ -29,7 +29,7 @@ class ControlGui:
              sg.Push()]
         ]
 
-        self.window = sg.Window("Control Page", layout=layout, no_titlebar=False, finalize=True, size=sg.Window.get_screen_size())
+        self.window = sg.Window("Control Page", layout=layout, no_titlebar=True, finalize=True, size=sg.Window.get_screen_size())
 
         self.window.maximize()
 

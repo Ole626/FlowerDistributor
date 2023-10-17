@@ -6,14 +6,15 @@ from display_client import DisplayClient
 
 class DisplayGui:
 
-    def __init__(self, broker_ip, broker_port, topics, id_value, theme="DefaultNoMoreNagging"):
+    def __init__(self, broker_ip, broker_port, topics, id_value, font_size=150, theme="DefaultNoMoreNagging"):
         self.broker_ip = broker_ip
         self.broker_port = broker_port
         self.topics = topics
         self.id_value = id_value
         self.theme = theme
         self.window = None
-        self.label = "NO VALUE"
+        self.font_size = font_size
+        self.label = id_value
 
     def display_page(self):
         # Set class theme.
@@ -22,11 +23,11 @@ class DisplayGui:
 
         layout = [
             [sg.Text("", key="_FILLER_1_TEXT_", expand_x=True, expand_y=True, background_color="white")],
-            [sg.Text(self.label, key="_DISPLAY_TEXT_", font=("Arial", 88), auto_size_text=True, expand_x=True, background_color="white")],
+            [sg.Text(self.label, key="_DISPLAY_TEXT_", font=("Arial", self.font_size), auto_size_text=True, expand_x=True, background_color="white")],
             [sg.Text("", key="_FILLER_2_TEXT_", expand_x=True, expand_y=True, background_color="white")]
         ]
 
-        self.window = sg.Window("Display Page", layout=layout, text_justification='c', no_titlebar=False, finalize=True, background_color="white", size=sg.Window.get_screen_size())
+        self.window = sg.Window("Display Page", layout=layout, text_justification='c', no_titlebar=True, finalize=True, background_color="white", size=sg.Window.get_screen_size())
 
         self.window.maximize()
 
