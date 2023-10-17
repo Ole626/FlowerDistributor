@@ -30,6 +30,7 @@ class DisplayGui:
         self.window = sg.Window("Display Page", layout=layout, text_justification='c', no_titlebar=True, finalize=True, background_color="white", size=sg.Window.get_screen_size())
 
         self.window.maximize()
+        self.window.bind("<Escape>", "_ESCAPE_")
 
         display_client = DisplayClient(self.broker_ip, self.broker_port, self.id_value, self.topics, self)
         display_client.connect_broker()
@@ -39,7 +40,7 @@ class DisplayGui:
 
             if event == "_TEXT_UPDATE_":
                 self.window["_DISPLAY_TEXT_"].update(values["_TEXT_UPDATE_"])
-            if event in (sg.WINDOW_CLOSED, "Exit"):
+            if event in (sg.WINDOW_CLOSED, "Exit", "_ESCAPE_"):
                 display_client.disconnect_broker()
                 break
 
