@@ -32,6 +32,7 @@ class ControlGui:
         self.window = sg.Window("Control Page", layout=layout, no_titlebar=False, finalize=True, size=sg.Window.get_screen_size())
 
         self.window.maximize()
+        self.window.bind("<Escape>", "_ESCAPE_")
 
         cc = ControlClient(self.broker_ip, self.broker_port, self.id_value)
         cc.connect_broker()
@@ -39,16 +40,30 @@ class ControlGui:
         while True:
             event, values = self.window.read()
 
-            if event == sg.WINDOW_CLOSED:
-                cc.disconnect_broker()
-                break
             if '_SELECT_' in event:
                 self.select_screen(self.window, event.split('_')[2])
-            if event == '_UPDATE_':
+            elif event == '_UPDATE_':
                 topic = 'client-' + self.selected_screen + '/label'
                 text = values['_INPUT_TEXT_']
                 cc.publish(topic, text)
                 self.window['_SCREEN_' + self.selected_screen + '_TEXT_'].update(text)
+<<<<<<< Updated upstream
+=======
+            elif event == '_TEST_ID_':
+                if not self.test_ids_enabled:
+                    self.test_ids_enabled = True
+                    self.window['_UPDATE_'].update(disabled=True)
+                    self.test_ids(cc, '1')
+                else:
+                    self.test_ids_enabled = False
+                    self.window['_UPDATE_'].update(disabled=False)
+                    self.test_ids(cc, '0')
+            elif event in (sg.WINDOW_CLOSED, "Exit", "_ESCAPE_"):
+                cc.disconnect_broker()
+                break
+            else:
+                break
+>>>>>>> Stashed changes
 
     def select_screen(self, window, screen_id):
         window['_SCREEN_' + self.selected_screen + '_TEXT_'].update(background_color='white')

@@ -38,8 +38,14 @@ class DisplayGui:
 
             if event == "_TEXT_UPDATE_":
                 self.window["_DISPLAY_TEXT_"].update(values["_TEXT_UPDATE_"])
+<<<<<<< Updated upstream
             if event in (sg.WINDOW_CLOSED, "Exit"):
+=======
+            elif event in (sg.WINDOW_CLOSED, "Exit", "_ESCAPE_"):
+>>>>>>> Stashed changes
                 display_client.disconnect_broker()
+                break
+            else:
                 break
 
     def update_text(self, text):
