@@ -13,6 +13,7 @@ class ControlGui:
         self.selected_screen = '1'
         self.theme = theme
         self.window = None
+        self.test_ids_enabled = False
 
     def control_page(self):
         sg.theme(self.theme)
@@ -24,12 +25,14 @@ class ControlGui:
                 [sg.InputText('', key='_INPUT_TEXT_', font=('Arial', 42))],
                 [sg.Push(),
                  sg.Button("Update", key='_UPDATE_', font=("Arial", 28), enable_events=True),
+                 sg.Push(),
+                 sg.Button("Test ID", key='_TEST_ID_', font=("Arial", 28), enable_events=True),
                  sg.Push()]
              ], title="Scherm Update", font=('Arial', 32)),
              sg.Push()]
         ]
 
-        self.window = sg.Window("Control Page", layout=layout, no_titlebar=False, finalize=True, size=sg.Window.get_screen_size())
+        self.window = sg.Window("Control Page", layout=layout, no_titlebar=True, finalize=True, size=sg.Window.get_screen_size())
 
         self.window.maximize()
         self.window.bind("<Escape>", "_ESCAPE_")
@@ -47,8 +50,6 @@ class ControlGui:
                 text = values['_INPUT_TEXT_']
                 cc.publish(topic, text)
                 self.window['_SCREEN_' + self.selected_screen + '_TEXT_'].update(text)
-<<<<<<< Updated upstream
-=======
             elif event == '_TEST_ID_':
                 if not self.test_ids_enabled:
                     self.test_ids_enabled = True
@@ -63,7 +64,6 @@ class ControlGui:
                 break
             else:
                 break
->>>>>>> Stashed changes
 
     def select_screen(self, window, screen_id):
         window['_SCREEN_' + self.selected_screen + '_TEXT_'].update(background_color='white')
@@ -88,6 +88,12 @@ class ControlGui:
                                    title='Scherm ' + str(i), expand_x=True, key='_SCREEN_' + str(i) + '_FRAME_', font=('Arial', 32)))
 
         return result
+
+    def test_ids(self, control_broker, status):
+        for i in range(1, self.screen_amount):
+            topic = 'client-' + str(i) + '/id_test'
+            text = status
+            control_broker.publish(topic, text)
 
     def main(self):
         self.control_page()

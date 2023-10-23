@@ -1,6 +1,7 @@
 {
-  "client_type": "Control",
+  "client_type": "Display",
   "id_info": "6",
+  "font_size": 260,
   "broker_ip": "192.168.0.24",
   "broker_port": 1883
 }
