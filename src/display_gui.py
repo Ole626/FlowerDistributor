@@ -22,12 +22,12 @@ class DisplayGui:
         sg.set_options(element_padding=(0, 0))
 
         layout = [
-            [sg.Text("", key="_FILLER_1_TEXT_", expand_x=True, expand_y=True, background_color="white")],
-            [sg.Text(self.label, key="_DISPLAY_TEXT_", font=("Arial", self.font_size), auto_size_text=True, expand_x=True, background_color="white")],
-            [sg.Text("", key="_FILLER_2_TEXT_", expand_x=True, expand_y=True, background_color="white")]
+            [sg.Text("", key="_FILLER_1_TEXT_", expand_x=True, expand_y=True, background_color="yellow")],
+            [sg.Text(self.label, key="_DISPLAY_TEXT_", font=("Arial", self.font_size), auto_size_text=True, expand_x=True, background_color="yellow")],
+            [sg.Text("", key="_FILLER_2_TEXT_", expand_x=True, expand_y=True, background_color="yellow")]
         ]
 
-        self.window = sg.Window("Display Page", layout=layout, text_justification='c', no_titlebar=True, finalize=True, background_color="white", size=sg.Window.get_screen_size())
+        self.window = sg.Window("Display Page", layout=layout, text_justification='c', no_titlebar=True, finalize=True, background_color="yellow", size=sg.Window.get_screen_size())
 
         self.window.maximize()
         self.window.bind("<Escape>", "_ESCAPE_")
@@ -56,17 +56,17 @@ class DisplayGui:
     def show_mqtt_id(self, id_value):
         # Check if there is a window to update.
         if self.window is not None:
-            self.window["_DISPLAY_TEXT_"].update(id_value, background_color="green")
-            self.window["_FILLER_1_TEXT_"].update(background_color="green")
-            self.window["_FILLER_2_TEXT_"].update(background_color="green")
+            self.window["_DISPLAY_TEXT_"].update(id_value, background_color="white")
+            self.window["_FILLER_1_TEXT_"].update(background_color="white")
+            self.window["_FILLER_2_TEXT_"].update(background_color="white")
             self.window.refresh()
 
     def hide_mqtt_id(self):
         # Check if there is a window to update.
         if self.window is not None:
-            self.window["_DISPLAY_TEXT_"].update(self.label, background_color="white")
-            self.window["_FILLER_1_TEXT_"].update(background_color="white")
-            self.window["_FILLER_2_TEXT_"].update(background_color="white")
+            self.window["_DISPLAY_TEXT_"].update(self.label, background_color="yellow")
+            self.window["_FILLER_1_TEXT_"].update(background_color="yellow")
+            self.window["_FILLER_2_TEXT_"].update(background_color="yellow")
             self.window.refresh()
 
     def main(self):
