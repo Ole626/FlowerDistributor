@@ -22,6 +22,6 @@ class DisplayClient(AbstractClient):
             self.gui.update_text(self.latest_msg)
         elif msg.topic == self.topic_string + "/id_test":
             if self.latest_msg == '1':
-                self.gui.show_mqtt_id(self.screen_id)
+                self.gui.show_mqtt_id(self.topic_string)
             if self.latest_msg == '0':
                 self.gui.hide_mqtt_id()
