@@ -6,15 +6,16 @@ from display_client import DisplayClient
 
 class DisplayGui:
 
-    def __init__(self, broker_ip, broker_port, topics, id_value, font_size=150, theme="DefaultNoMoreNagging"):
+    def __init__(self, broker_ip, broker_port, topics, client_id, topic_id, font_size=150, theme="DefaultNoMoreNagging"):
         self.broker_ip = broker_ip
         self.broker_port = broker_port
         self.topics = topics
-        self.id_value = id_value
+        self.client_id = client_id
+        self.topic_id = topic_id
         self.theme = theme
         self.window = None
         self.font_size = font_size
-        self.label = id_value
+        self.label = topic_id
 
     def display_page(self):
         # Set class theme.
@@ -32,7 +33,7 @@ class DisplayGui:
         self.window.maximize()
         self.window.bind("<Escape>", "_ESCAPE_")
 
-        display_client = DisplayClient(self.broker_ip, self.broker_port, self.id_value, self.topics, self)
+        display_client = DisplayClient(self.broker_ip, self.broker_port, self.client_id, self.topic_id, self.topics, self)
         display_client.connect_broker()
 
         while True:
@@ -56,7 +57,7 @@ class DisplayGui:
     def show_mqtt_id(self, id_value):
         # Check if there is a window to update.
         if self.window is not None:
-            self.window["_DISPLAY_TEXT_"].update(id_value, background_color="white")
+            self.window["_DISPLAY_TEXT_"].update(topic_id, background_color="white")
             self.window["_FILLER_1_TEXT_"].update(background_color="white")
             self.window["_FILLER_2_TEXT_"].update(background_color="white")
             self.window.refresh()

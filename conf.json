@@ -1,7 +1,8 @@
 {
   "client_type": "Display",
-  "id_info": "6",
+  "client_id": "41",
+  "topic_id": "4",
   "font_size": 260,
-  "broker_ip": "192.168.0.24",
+  "broker_ip": "192.168.180.233",
   "broker_port": 1883
 }
