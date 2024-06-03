@@ -25,16 +25,17 @@ class ControlGui:
                 [sg.InputText('', key='_INPUT_TEXT_', font=('Arial', 42))],
                 [sg.Push(),
                  sg.Button("Update", key='_UPDATE_', font=("Arial", 28), enable_events=True),
-                 sg.Push(),
-                 sg.Button("Test ID", key='_TEST_ID_', font=("Arial", 28), enable_events=True),
-                 sg.Push()]
+                 sg.Push()
+                 #,sg.Button("Test ID", key='_TEST_ID_', font=("Arial", 28), enable_events=True),
+                 #sg.Push() # Removed for complicated purposes
+                 ]
              ], title="Scherm Update", font=('Arial', 32)),
              sg.Push()]
         ]
 
-        self.window = sg.Window("Control Page", layout=layout, no_titlebar=True, finalize=True, size=sg.Window.get_screen_size())
+        self.window = sg.Window("Control Page", layout=layout, no_titlebar=False, finalize=True, size=sg.Window.get_screen_size())
 
-        self.window.maximize()
+        #self.window.maximize()
         self.window.bind("<Escape>", "_ESCAPE_")
 
         cc = ControlClient(self.broker_ip, self.broker_port, self.id_value)
