@@ -25,9 +25,6 @@ class ControlGui:
                 [sg.InputText('', key='_INPUT_TEXT_', font=('Arial', 42))],
                 [sg.Push(),
                  sg.Button("Update", key='_UPDATE_', font=("Arial", 28), enable_events=True),
-                 sg.Push()
-                 #,sg.Button("Test ID", key='_TEST_ID_', font=("Arial", 28), enable_events=True),
-                 #sg.Push() # Removed for complicated purposes
                  ]
              ], title="Scherm Update", font=('Arial', 32)),
              sg.Push()]
@@ -51,15 +48,6 @@ class ControlGui:
                 text = values['_INPUT_TEXT_']
                 cc.publish(topic, text)
                 self.window['_SCREEN_' + self.selected_screen + '_TEXT_'].update(text)
-            elif event == '_TEST_ID_':
-                if not self.test_ids_enabled:
-                    self.test_ids_enabled = True
-                    self.window['_UPDATE_'].update(disabled=True)
-                    self.test_ids(cc, '1')
-                else:
-                    self.test_ids_enabled = False
-                    self.window['_UPDATE_'].update(disabled=False)
-                    self.test_ids(cc, '0')
             elif event in (sg.WINDOW_CLOSED, "Exit", "_ESCAPE_"):
                 cc.disconnect_broker()
                 break
